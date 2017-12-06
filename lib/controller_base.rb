@@ -33,6 +33,7 @@ class ControllerBase
     res.location = url
     res.status = 302
     set_response_status
+    store_session_data
   end
 
   # Populate the response with content.
@@ -46,6 +47,11 @@ class ControllerBase
     res['Content-Type'] = content_type
     res.write(content)
     set_response_status
+    store_session_data
+  end
+  
+  def store_session_data
+    @session.store_session(res)
   end
   
   # use ERB and binding to evaluate templates
@@ -73,6 +79,7 @@ class ControllerBase
 
   # method exposing a `Session` object
   def session
+    @session ||= Session.new(req)
   end
 
   # use this with the router to call action_name (:index, :show, :create...)
