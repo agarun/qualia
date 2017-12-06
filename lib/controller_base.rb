@@ -8,9 +8,11 @@ class ControllerBase
   attr_reader :req, :res, :params
 
   # Setup the controller
-  def initialize(req, res)
+  # merge params packaged in Rack::Request.params with `route_params` from `Route`
+  def initialize(req, res, params = {})
     @req = req
     @res = res
+    @params = req.params.merge(params)
   end
 
   # Helper method to alias @already_built_response
@@ -51,7 +53,7 @@ class ControllerBase
   end
   
   def store_session_data
-    @session.store_session(res)
+    session.store_session(res)
   end
   
   # use ERB and binding to evaluate templates
@@ -82,8 +84,10 @@ class ControllerBase
     @session ||= Session.new(req)
   end
 
-  # use this with the router to call action_name (:index, :show, :create...)
+  # used with the router to call a given action (e.g. :index, :show, :create, etc.)
+  # && invokes the *controller's* method corresponding to the action
   def invoke_action(name)
+    already_built_response? ? render(name) : self.send(name)
   end
 end
 
