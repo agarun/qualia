@@ -2,10 +2,11 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'active_support/inflector'
 require 'erb'
+require_relative './flash'
 require_relative './session'
 
 class ControllerBase
-  attr_reader :req, :res, :params
+  attr_reader :req, :res, :flash, :params
 
   # Setup the controller
   # merge params packaged in Rack::Request.params with `route_params` from `Route`
@@ -13,6 +14,7 @@ class ControllerBase
     @req = req
     @res = res
     @params = req.params.merge(params)
+    @flash = Flash.new(req)
   end
 
   # Helper method to alias @already_built_response
