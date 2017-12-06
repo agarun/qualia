@@ -17,9 +17,26 @@ class Route
     pattern.match(req.path) && req.request_method.downcase == http_method.to_s  
   end
 
-  # use pattern to pull out route params (save for later?)
-  # instantiate controller and call controller action
+  # instantiates an instance of the controller class
+  # calls the *controller's* action via `ControllerBase#invoke_action`
   def run(req, res)
+    if matches?(req)
+      controller_instance = controller_class.new(req, res, route_params(req))
+      controller_instance.invoke_action(action_name)
+    else
+      # extra precaution! won't be hit if `Router#run` is used
+      res.status = 404
+      res.write("No route matches for #{http_method} on #{controller_class}")
+    end
+  end
+  
+  private
+  
+  def route_params(req)
+    params = {}
+    match_data = pattern.match(req.path)
+    match_data.names.each { |key| params[key] = match_data[key] }
+    params
   end
 end
 
@@ -27,7 +44,6 @@ class Router
   attr_reader :routes
 
   def initialize
-    # TODO: hash
     @routes = []
   end
 
@@ -36,9 +52,12 @@ class Router
     @routes << Route.new(pattern, method, controller_class, action_name)
   end
 
-  # evaluate the proc in the context of the instance
-  # for syntactic sugar :)
+  # evaluate the proc in the context of the instance (syntactic sugar)
+  # e.g. routes.draw { get Regexp.new("^/cats$"), Cats2Controller, :index }
+  # the contents of the proc will be able to call `Router#get` method with its
+  # arguments because `instance_eval` changes the scope inside the block
   def draw(&proc)
+    self.instance_eval(&proc)
   end
 
   # the router has methods corresponding to HTTP verbs
@@ -49,16 +68,26 @@ class Router
     end
   end
 
-  # should return the route that matches this request
+  # return the route that matches this request
   def match(req)
     @routes.find { |route| route.matches?(req) }
   end
 
+  # call #run on the first matching route
+  # ---
   # find the requested URL
   # match it to the path regex of one Route object
   # ask the Route to instantiate the appropriate controller
-  # call the appropriate method
-  # else if no matched route, throw 404 instead of running
+  # and call the appropriate method corresponding to the action
+  # else if no matched route, throw 404 & add message
   def run(req, res)
+    first_matched_route = match(req)
+    
+    if first_matched_route
+      first_matched_route.run(req, res)
+    else
+      res.status = 404
+      res.write("No route matches for #{req.request_method} for #{req.path}")
+    end
   end
 end
