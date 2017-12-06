@@ -6,10 +6,11 @@ class MyController < ControllerBase
     if @req.path == "/cats"
       render_content("hello cats!", "text/html")
     else
-      redirect_to("/cats")
+      redirect_to("/cats") # *makes another request*
     end
   end
 end
+
 app = Proc.new do |env|
   req = Rack::Request.new(env)
   res = Rack::Response.new
