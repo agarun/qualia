@@ -39,19 +39,19 @@ Query methods include:
 Associations between objects are class methods. For example:
 
 ```rb
-class Photo < SQLObject
+class Photo < ApplicationRecord
   belongs_to :album
   has_one_through :author,
-                  :album
-                  :user
+                  :album,
+                  :user_id
 end
 
-class Album < SQLObject
-  belongs_to :author
+class Album < ApplicationRecord
+  belongs_to :author, foreign_key: :user_id, class_name: :User
   has_many :photos
 end
 
-class Author < SQLObject
+class User < ApplicationRecord
   has_many :albums
 end
 ```
