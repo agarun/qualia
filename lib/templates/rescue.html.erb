@@ -1,5 +1,65 @@
-<h1>stack trace</h1>
+<head>
+  <style>
+    body {
+      font-family: sans-serif;
+      font-size: 14px;
+      background-color: #fcfbff;
+    }
 
-<% error.backtrace.each do |stack_trace_line| %>
-  <%= stack_trace_line %><br>
-<% end %>
+    main h1 {
+      margin: 10px;
+      color: red;
+      font-size: 24px;
+    }
+
+    main p {
+      margin: 10px;
+    }
+
+    .source-line-number {
+      color: black;
+    }
+
+    .source-line-row div {
+      margin: 4px 5px;
+      display: inline;
+    }
+
+    .source {
+      margin: 20px;
+      display: flex;
+      flex-flow: column nowrap;
+    }
+
+    .line-number {
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>
+    Error near source line number
+    <span class="source-line-number"><%= source_line_number(error) %></span>
+  </h1>
+
+  <h1>Source</h1>
+  <div class="source">
+    <% get_source(error).each do |source_line_number, source_line| %>
+      <div class="source-line-row">
+        <div class="line-number">
+          <%= source_line_number %>
+        </div>
+        <div class="source-line">
+          <%= source_line %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <h1>Stack Trace</h1>
+    <% error.backtrace.each do |stack_trace_line| %>
+      <p><%= stack_trace_line %></p>
+    <% end %>
+</main>
+</body>
