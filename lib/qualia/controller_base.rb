@@ -58,7 +58,7 @@ class ControllerBase
 
   # use ERB and binding to evaluate templates
   # pass the rendered html to render_content
-  # ---
+  # ~
   # use controller and template names to construct paths to template files
   # read the template file in via `File.read`
   # create a new ERB template from the contents
