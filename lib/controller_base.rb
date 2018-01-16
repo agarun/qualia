@@ -8,6 +8,10 @@ require_relative './session'
 class ControllerBase
   attr_reader :req, :res, :flash, :params
 
+  def self.protect_from_forgery
+    @@protect_from_forgery = true
+  end
+
   # merge params packaged in Rack::Request.params with `route_params` from `Route`
   def initialize(req, res, params = {})
     @req = req
@@ -82,6 +86,35 @@ class ControllerBase
   # used with the router to call a given action (e.g. :index, :show, :create, etc.)
   # && invokes the *controller's* method corresponding to the action
   def invoke_action(name)
+    if protect_from_forgery? && req.request_method != "GET"
+      check_authenticity_token
+    else
+      form_authenticity_token
+    end
+
     already_built_response? ? render(name) : self.send(name)
+  end
+
+  def form_authenticity_token
+    @token ||= SecureRandom.urlsafe_base64
+    res.set_cookie(
+      "authenticity_token",
+      path: "/",
+      value: @token
+    )
+    @token
+  end
+
+  private
+
+  def protect_from_forgery?
+    self.class.protect_from_forgery
+  end
+
+  def check_authenticity_token
+    token = req.cookies["authenticity_token"]
+    unless token && token === params["authenticity_token"]
+      raise "Invalid authenticity token"
+    end
   end
 end
