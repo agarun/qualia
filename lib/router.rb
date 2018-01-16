@@ -14,7 +14,7 @@ class Route
 
   # true if pattern matches request path and http method matches request method
   def matches?(req)
-    pattern.match(req.path) && req.request_method.downcase == http_method.to_s  
+    pattern.match(req.path) && req.request_method.downcase == http_method.to_s
   end
 
   # instantiates an instance of the controller class
@@ -29,9 +29,9 @@ class Route
       res.write("No route matches for #{http_method} on #{controller_class}")
     end
   end
-  
+
   private
-  
+
   def route_params(req)
     params = {}
     match_data = pattern.match(req.path)
@@ -62,7 +62,7 @@ class Router
 
   # the router has methods corresponding to HTTP verbs
   # each method adds a Route object to the Router's `@routes`
-  [:get, :post, :put, :delete].each do |http_method|
+  %i[get post put delete].each do |http_method|
     define_method(http_method) do |pattern, controller_class, action_name|
       add_route(pattern, http_method, controller_class, action_name)
     end
@@ -73,8 +73,7 @@ class Router
     @routes.find { |route| route.matches?(req) }
   end
 
-  # call #run on the first matching route
-  # ---
+  # call #run on the first matching route.
   # find the requested URL
   # match it to the path regex of one Route object
   # ask the Route to instantiate the appropriate controller
@@ -82,7 +81,7 @@ class Router
   # else if no matched route, throw 404 & add message
   def run(req, res)
     first_matched_route = match(req)
-    
+
     if first_matched_route
       first_matched_route.run(req, res)
     else
