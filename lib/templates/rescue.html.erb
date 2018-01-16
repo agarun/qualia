@@ -39,6 +39,10 @@
 <body>
 <main>
   <h1>
+    <%= error.class %>: <%= error.message %>
+  </h1>
+
+  <h1>
     Error near source line number
     <span class="source-line-number"><%= source_line_number(error) %></span>
   </h1>
