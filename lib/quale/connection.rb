@@ -1,9 +1,9 @@
 require 'sqlite3'
 
 PRINT_QUERIES = ENV['PRINT_QUERIES'] == 'true'
-ROOT_FOLDER = File.join(File.dirname(__FILE__), '../spec')
-CATS_SQL_FILE = File.join(ROOT_FOLDER, 'cats.sql')
-CATS_DB_FILE = File.join(ROOT_FOLDER, 'cats.db')
+ROOT_FOLDER = File.join(File.dirname(__FILE__), '../../sample/db')
+SAMPLE_SQL_FILE = File.join(ROOT_FOLDER, 'sample.sql')
+SAMPLE_DB_FILE = File.join(ROOT_FOLDER, 'sample.db')
 
 class DBConnection
   def self.print_query(query, *interpolation_args)
@@ -27,12 +27,12 @@ class DBConnection
 
   def self.reset
     commands = [
-      "rm '#{CATS_DB_FILE}'",
-      "cat '#{CATS_SQL_FILE}' | sqlite3 '#{CATS_DB_FILE}'"
+      "rm '#{SAMPLE_DB_FILE}'",
+      "cat '#{SAMPLE_SQL_FILE}' | sqlite3 '#{SAMPLE_DB_FILE}'"
     ]
 
     commands.each { |command| `#{command}` }
-    DBConnection.open(CATS_DB_FILE)
+    DBConnection.open(SAMPLE_DB_FILE)
   end
 
   def self.instance
