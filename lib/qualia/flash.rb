@@ -27,7 +27,7 @@ class Flash
   # persisting the flash cookie but flushing the now data
   # is enabled by checking the `@now` ivar first
   def [](notice)
-    @now[notice.to_s] || @flash[notice.to_s]
+    @now[notice.to_s] || @now[notice.to_sym] || @flash[notice.to_s]
   end
 
   def []=(notice, message)
