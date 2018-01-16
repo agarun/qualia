@@ -73,7 +73,7 @@ class ControllerBase
   # pass the result to #render_content with a content_type of text/html
   def render(template_name)
     controller_name = self.class.to_s.underscore
-    view_contents = File.read("views/#{controller_name}/#{template_name}.html.erb")
+    view_contents = File.read("app/views/#{controller_name}/#{template_name}.html.erb")
     view_contents_with_context = ERB.new(view_contents).result(binding)
     render_content(view_contents_with_context, "text/html")
   end
