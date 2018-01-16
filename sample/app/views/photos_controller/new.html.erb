@@ -1,0 +1,19 @@
+<p><a href="/">Back to all photos</a></p>
+
+<form action="/photos" method="POST">
+  <label>
+    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+  </label>
+
+  <label>
+    Title
+    <input type="text" name="photos[photo_title]">
+  </label>
+
+  <label>
+    URL
+    <input type="text" name="photos[photo_url]">
+  </label>
+
+  <input type="submit" value="Submit">
+</form>

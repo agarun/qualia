@@ -1,1 +1,8 @@
-Photos Index!
+<main>
+  Here's my photos!
+  <% @photos.each do |photo| %>
+    <p><%= photo.photo_title %></p>
+    <img width=5% src="<%= photo.photo_url %>" />
+  <% end %>
+  <p><a href="/photos/new">Add a new photo</a></p>
+</main>
