@@ -1,13 +1,5 @@
 require 'json'
 
-# Keep in mind that items stored in Flash exhibit two different types of behaviors;
-# some persist to the next request, while others disappear with the controller.
-# It might be a good idea to store these items differently.
-
-# Cookies store not only a given name and domain, but also the specific path of the request.
-# Make sure the cookie's path is set to / like the session cookie. This will ensure that we're
-# always dealing with the same cookie when inspecting and resetting the flash store.
-
 class Flash
   attr_reader :now
 
