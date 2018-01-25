@@ -1,3 +1,4 @@
+require_relative '../db/sample'
 require_relative "../config/routes"
 require_relative "../../lib/qualia/static"
 require_relative "../../lib/qualia/show_exceptions"

@@ -1,6 +1,7 @@
 require 'sqlite3'
 
 PRINT_QUERIES = ENV['PRINT_QUERIES'] == 'true'
+DB = File.join(Dir.pwd, 'db/')
 
 class DBConnection
   def self.sql_file(sql_file)
